@@ -15,44 +15,42 @@ var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/Me
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({expanded: true}));
 
-
+var Person;
 //need to declare   var Person for pg
 
 //GET name and message from the client side
-//app.get('/people', function(req, res){
-//    Person.find({}, function(err, data){
-//        if(err) console.log(err);
-//        res.send(data);
+app.get('/people', function(req, res){
+    var results = [];
 
-    // SQL Query SELECT data from table
-    //pg.connect(connectionString, function (err, client) {
-    //    var query = client.query("SELECT * FROM message_board ORDER BY name ASC");   //<-----  make sure this command connects to DB
-    //
-    //    //stream results back one row at a time, push into results array
-    //    query.on('row', function (row) {
-    //        results.push(row);
-    //    });
-    //
-    //    //after all data is returned, lcose connection and return results
-    //    query.on('end', function () {
-    //        client.end();
-    //        return res.json(results);
-    //    });
-    //
-    //    //handle Errors
-    //    if (err) {
-    //        console.log(err);
-    //    }
-    //
-    //});
-//});
+     //SQL Query SELECT data from table
+    pg.connect(connectionString, function (err, client) {
+        var query = client.query("SELECT * FROM message_board ORDER BY name DESC");   //<-----  make sure this command connects to DB
+
+        //stream results back one row at a time, push into results array
+        query.on('row', function (row) {
+            results.push(row);
+        });
+
+        //after all data is returned, return results
+        query.on('end', function () {
+            client.end();
+            return res.json(results);
+        });
+
+        //handle Errors
+        if (err) {
+            console.log(err);
+        }
+
+    });
+});
 
 app.post('/people', function(req, res){
-    var addedPerson = new Person({name: req.body.name});
-    addedPerson.save(function(err, data){
-        if(err) console.log(err);
-        res.send(data);
+    var addedPerson = {
+        "name": req.body.name,
+        "message": req.body.message
     };
+    console.log("get request", addedPerson);
 
     pg.connect(connectionString, function(err, client){
         client.query("INSERT INTO message_board (name, message) VALUES ($1, $2) RETURNING id",
@@ -79,5 +77,6 @@ app.get("/*", function(req, res){
 
 app.listen(app.get("port"), function(){
     console.log("listening on port", app.get("port"));
+
 });
 

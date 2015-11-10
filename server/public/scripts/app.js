@@ -2,39 +2,37 @@
  * Created by Thomas on 11/8/15.
  */
 //declares angular module
-var myApp = angular.module('myApp', []);
+var myApp = angular.module("myApp", []);
+console.log("is this working 1?");
 
 
-//myApp.filter('greet', function() {
-//    return function(name) {
-//        return 'Hello, ' + name + '!';
-//    };
-//});
 
-// this strips info from the input on the DOM
-myApp.controller("WelcomeController", ['$scope', 'http', function($scope, $http){
-
+myApp.controller("WelcomeController", ['$scope', '$http', function($scope, $http){
+    console.log("is this working 2?");
 
     $scope.note = {};
     $scope.nameArray = [];
-    $scope.nameArray = response.data;
-
+    //$scope.nameArray = response.data;
 
 
     //POST
     $scope.clickButton = function(request){
+        console.log("button click",request);
+
         $http.post('/people', request).then(function(response){
-            $scope.nameArray = response.data;
             $scope.getPeople();
         })
+        $scope.note = {};
     };
 
     //GET
     $scope.getPeople = function(){
+        console.log("is this working 3?");
         $http.get('/people').then(function(response){
             $scope.nameArray = response.data;
         });
     };
+
 
     $scope.getPeople();
 }]);
