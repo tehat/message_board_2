@@ -7,7 +7,7 @@ var app = express();
 var path = require("path");
 var bodyParser = require("body-parser");
 
-app.set("port", process.env.PORT || 5000);
+app.set("port", process.env.PORT || 5050);
 
 var pg = require('pg');
 var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/Message_Center';
@@ -16,38 +16,42 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({expanded: true}));
 
 
+//need to declare   var Person for pg
 
 //GET name and message from the client side
-app.get('/data', function(req, res){
-    var results = [];
+//app.get('/people', function(req, res){
+//    Person.find({}, function(err, data){
+//        if(err) console.log(err);
+//        res.send(data);
 
     // SQL Query SELECT data from table
-    pg.connect(connectionString, function (err, client) {
-        var query = client.query("SELECT * FROM message_board ORDER BY name ASC");   //<-----  make sure this command connects to DB
+    //pg.connect(connectionString, function (err, client) {
+    //    var query = client.query("SELECT * FROM message_board ORDER BY name ASC");   //<-----  make sure this command connects to DB
+    //
+    //    //stream results back one row at a time, push into results array
+    //    query.on('row', function (row) {
+    //        results.push(row);
+    //    });
+    //
+    //    //after all data is returned, lcose connection and return results
+    //    query.on('end', function () {
+    //        client.end();
+    //        return res.json(results);
+    //    });
+    //
+    //    //handle Errors
+    //    if (err) {
+    //        console.log(err);
+    //    }
+    //
+    //});
+//});
 
-        //stream results back one row at a time, push into results array
-        query.on('row', function (row) {
-            results.push(row);
-        });
-
-        //after all data is returned, lcose connection and return results
-        query.on('end', function () {
-            client.end();
-            return res.json(results);
-        });
-
-        //handle Errors
-        if (err) {
-            console.log(err);
-        }
-
-    });
-});
-
-app.post('/data', function(req, res){
-    var addedPerson = {
-        "name": req.body.addName,
-        "message": req.body.addMessage
+app.post('/people', function(req, res){
+    var addedPerson = new Person({name: req.body.name});
+    addedPerson.save(function(err, data){
+        if(err) console.log(err);
+        res.send(data);
     };
 
     pg.connect(connectionString, function(err, client){
@@ -74,6 +78,6 @@ app.get("/*", function(req, res){
 
 
 app.listen(app.get("port"), function(){
-    console.log("listening in port", app.get("port"));
+    console.log("listening on port", app.get("port"));
 });
 

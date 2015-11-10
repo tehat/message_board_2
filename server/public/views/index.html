@@ -1,27 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-ang="myApp">
 <head>
     <meta charset="UTF-8">
     <title></title>
 
     <link rel="stylesheet" href="/vendor/bootstrap.min.css">
 
-    <script type="text/javascript" src="/vendor/jquery.min.js"></script>
+    <script type="text/javascript" src="/vendor/angular.min.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
 
 
 </head>
 <body>
-    <h1>Message Board</h1>
+
+    <!--<div ng-app="myApp">-->
+        <!--<div>-->
+            <!--{{ 'World' | greet }}-->
+        <!--</div>-->
 
 
-    <form id="messageForm">
-        <input type="text" id="addName" class="col-md-2" name="addName" placeholder="Name">
-        <input type="text" id="addMessage" class="col-md-offset-1 col-md-6" name="addMessage" placeholder="Add Your Message!">
-        <button id="submit" class="btn btn-danger col-md-offset-1 col-md-2">Submit Message</button>
-    </form>
 
-    <div class="messageContainer"></div>
+    <div class="container" ng-controller="WelcomeController">
+        <h1>Message Board</h1>
+
+            <input ng-model="note.name" type="text" class="col-md-2" placeholder="Name">
+            <input ng-model="note.message" type="text" class="col-md-offset-1 col-md-6"  placeholder="Add Your Message!">
+            <button ng-click="clickButton(note)" class="btn btn-danger col-md-offset-1 col-md-2">Submit Message</button>
+
+
+         <div ng-repeat="people in nameArray">
+            <div class="col-md-6 well">
+                <p class="lead">{{people.name}}</p>
+            </div>
+         </div>
+    </div>
+
+    <!--<div class="messageContainer"></div>-->
 
 
 
