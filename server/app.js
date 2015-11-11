@@ -7,10 +7,10 @@ var app = express();
 var path = require("path");
 var bodyParser = require("body-parser");
 
-app.set("port", process.env.PORT || 5050);
+app.set("port", process.env.PORT || 5432);
 
 var pg = require('pg');
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/Message_Center';
+var connectionString = process.env.DATABASE_URL + "?ssl=true" || 'postgres://localhost:5432/message_board_heroku';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({expanded: true}));
@@ -24,7 +24,7 @@ app.get('/people', function(req, res){
 
      //SQL Query SELECT data from table
     pg.connect(connectionString, function (err, client) {
-        var query = client.query("SELECT * FROM message_board ORDER BY name DESC");   //<-----  make sure this command connects to DB
+        var query = client.query("SELECT * FROM message_board_heroku ORDER BY name DESC");   //<-----  make sure this command connects to DB
 
         //stream results back one row at a time, push into results array
         query.on('row', function (row) {
